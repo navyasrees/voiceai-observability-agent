@@ -1,0 +1,30 @@
+[
+  {
+    "agent_id": "agent-001",
+    "name": "LeadQualifier",
+    "goal": "Qualify inbound leads for a digital marketing agency by collecting contact details, understanding their business needs, budget range, and timeline. Book a discovery call if they are a good fit.",
+    "kpis": [
+      "Greet the caller warmly and introduce the agency within the first 30 seconds",
+      "Collect the caller's full name, email address, and company name",
+      "Ask about the caller's monthly marketing budget and qualify if it meets the $1,500 minimum threshold",
+      "Ask about the caller's primary marketing challenge or goal",
+      "Ask about the desired timeline for starting services",
+      "Offer to schedule a discovery call if the lead qualifies",
+      "End the call with clear next steps and a polite close"
+    ]
+  },
+  {
+    "agent_id": "agent-002",
+    "name": "AppointmentReminder",
+    "goal": "Call patients 24 hours before their scheduled appointment to confirm attendance, provide location and preparation instructions, and reschedule if they cannot make it.",
+    "kpis": [
+      "Identify the patient by name and confirm their identity within the first two turns",
+      "State the appointment date, time, and location clearly",
+      "Ask the patient to confirm they will attend",
+      "If the patient cannot attend, offer at least two alternative time slots",
+      "Provide any preparation instructions relevant to the appointment type",
+      "Confirm the final outcome — either confirmed attendance or a new appointment time",
+      "Keep the call under 3 minutes"
+    ]
+  }
+]

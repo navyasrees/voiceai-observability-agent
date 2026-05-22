@@ -1,0 +1,42 @@
+[
+  {
+    "call_id": "call-seed-001",
+    "agent_id": "agent-001",
+    "uploaded_at": "2026-05-20T10:00:00Z",
+    "turns": [
+      { "turn": 1, "speaker": "Agent", "timestamp": "00:00", "text": "Hey, thanks for calling. How can I help?" },
+      { "turn": 2, "speaker": "Caller", "timestamp": "00:04", "text": "Hi, I'm interested in your marketing services." },
+      { "turn": 3, "speaker": "Agent", "timestamp": "00:08", "text": "Great! Can I get your name?" },
+      { "turn": 4, "speaker": "Caller", "timestamp": "00:12", "text": "Sure, I'm Marcus Webb." },
+      { "turn": 5, "speaker": "Agent", "timestamp": "00:16", "text": "Nice to meet you Marcus. What kind of marketing are you looking for?" },
+      { "turn": 6, "speaker": "Caller", "timestamp": "00:22", "text": "We mainly need help with social media and maybe some paid ads." },
+      { "turn": 7, "speaker": "Agent", "timestamp": "00:28", "text": "Awesome. What's your budget for this?" },
+      { "turn": 8, "speaker": "Caller", "timestamp": "00:34", "text": "We haven't really set a firm number, maybe around $800 a month?" },
+      { "turn": 9, "speaker": "Agent", "timestamp": "00:40", "text": "Oh okay, got it. And when are you hoping to start?" },
+      { "turn": 10, "speaker": "Caller", "timestamp": "00:46", "text": "Probably in the next couple of months." },
+      { "turn": 11, "speaker": "Agent", "timestamp": "00:51", "text": "Sounds good! I'll pass your info along to our team and someone will reach out." },
+      { "turn": 12, "speaker": "Caller", "timestamp": "00:57", "text": "Okay, but how will they reach me? You didn't take my email or anything." },
+      { "turn": 13, "speaker": "Agent", "timestamp": "01:02", "text": "Oh right, sorry about that! What's your email?" },
+      { "turn": 14, "speaker": "Caller", "timestamp": "01:07", "text": "It's marcus@webbco.com." },
+      { "turn": 15, "speaker": "Agent", "timestamp": "01:12", "text": "Perfect, got it. We'll be in touch!" }
+    ]
+  },
+  {
+    "call_id": "call-seed-002",
+    "agent_id": "agent-002",
+    "uploaded_at": "2026-05-20T11:30:00Z",
+    "turns": [
+      { "turn": 1, "speaker": "Agent", "timestamp": "00:00", "text": "Hello, this is a reminder call from Riverside Medical. May I speak with Jordan Kim?" },
+      { "turn": 2, "speaker": "Caller", "timestamp": "00:05", "text": "This is Jordan." },
+      { "turn": 3, "speaker": "Agent", "timestamp": "00:08", "text": "Hi Jordan! Just calling to remind you about your appointment tomorrow at 2:30 PM at our Main Street clinic." },
+      { "turn": 4, "speaker": "Caller", "timestamp": "00:15", "text": "Oh, I totally forgot. I actually can't make it at 2:30 tomorrow." },
+      { "turn": 5, "speaker": "Agent", "timestamp": "00:20", "text": "No worries! We have an opening Thursday at 10:00 AM or Friday at 3:00 PM. Either of those work?" },
+      { "turn": 6, "speaker": "Caller", "timestamp": "00:27", "text": "Friday at 3 works for me." },
+      { "turn": 7, "speaker": "Agent", "timestamp": "00:31", "text": "Great, I've rescheduled you for Friday May 24th at 3:00 PM at our Main Street location." },
+      { "turn": 8, "speaker": "Caller", "timestamp": "00:38", "text": "Do I need to do anything to prepare?" },
+      { "turn": 9, "speaker": "Agent", "timestamp": "00:42", "text": "You'll want to fast for at least 8 hours before the appointment and bring your insurance card." },
+      { "turn": 10, "speaker": "Caller", "timestamp": "00:48", "text": "Got it, thanks." },
+      { "turn": 11, "speaker": "Agent", "timestamp": "00:51", "text": "You're all set Jordan. See you Friday!" }
+    ]
+  }
+]
