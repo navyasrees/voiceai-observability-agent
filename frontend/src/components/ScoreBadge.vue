@@ -1,7 +1,8 @@
 <template>
-  <span class="score-badge" :class="[colorClass, `size-${size}`]">
-    {{ score ?? '—' }}
-  </span>
+  <div class="score-badge" :class="[colorClass, `size-${size}`]">
+    <span class="score-num">{{ score ?? '—' }}</span>
+    <span v-if="size === 'lg'" class="score-denom">/100</span>
+  </div>
 </template>
 
 <script setup>
@@ -23,19 +24,34 @@ const colorClass = computed(() => {
 <style scoped>
 .score-badge {
   display: inline-flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: center;
   font-weight: 700;
-  border-radius: 20px;
+  border-radius: var(--radius-full);
   white-space: nowrap;
+  letter-spacing: -0.01em;
 }
 
-.size-sm { font-size: 11px; padding: 2px 8px; }
-.size-md { font-size: 13px; padding: 4px 12px; }
-.size-lg { font-size: 22px; padding: 8px 20px; min-width: 70px; }
+.size-sm  { font-size: 11.5px; padding: 2px 9px; gap: 1px; }
+.size-md  { font-size: 13.5px; padding: 4px 13px; gap: 2px; }
+.size-lg  {
+  font-size: 28px;
+  padding: 10px 22px;
+  border-radius: var(--radius);
+  gap: 2px;
+  min-width: 90px;
+  justify-content: center;
+}
 
-.green  { background: #dcfce7; color: #166534; }
-.yellow { background: #fef9c3; color: #854d0e; }
-.red    { background: #fee2e2; color: #991b1b; }
-.neutral { background: #f3f4f6; color: var(--text-muted); }
+.score-denom {
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.7;
+  margin-left: 1px;
+}
+
+.green  { background: var(--score-green-bg); color: var(--score-green); border: 1.5px solid #bbf7d0; }
+.yellow { background: var(--score-yellow-bg); color: var(--score-yellow); border: 1.5px solid #fde68a; }
+.red    { background: var(--score-red-bg); color: var(--score-red); border: 1.5px solid #fecaca; }
+.neutral { background: #f3f4f6; color: var(--text-muted); border: 1.5px solid var(--border); }
 </style>

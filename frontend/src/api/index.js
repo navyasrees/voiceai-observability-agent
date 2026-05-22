@@ -12,3 +12,4 @@ export const getAgentTranscripts = (id) => http.get(`/agents/${id}/transcripts`)
 export const uploadTranscript = (payload) => http.post('/transcripts/upload', payload);
 export const analyzeTranscript = (callId) => http.post(`/transcripts/${callId}/analyze`);
 export const getTranscript = (callId) => http.get(`/transcripts/${callId}`);
+export const updateAgentKpis = (id, kpis) => http.post(`/agents/${id}/kpis`, { kpis });

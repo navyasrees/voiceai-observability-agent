@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -5,26 +7,50 @@
 }
 
 :root {
-  --bg: #f8f9fc;
+  --bg: #f4f6fb;
   --card-bg: #ffffff;
+
   --primary: #0f3460;
   --primary-light: #1a4a7a;
-  --score-green: #27ae60;
-  --score-yellow: #f39c12;
-  --score-red: #e74c3c;
-  --flag-low: #fff9c4;
-  --flag-low-border: #f9e44a;
-  --flag-medium: #ffe0b2;
-  --flag-medium-border: #fb8c00;
-  --flag-high: #ffcdd2;
-  --flag-high-border: #e53935;
-  --text: #1a1a2e;
+  --primary-subtle: #e8f0fe;
+  --primary-accent: #4f8ef7;
+
+  --score-green: #16a34a;
+  --score-green-bg: #dcfce7;
+  --score-yellow: #d97706;
+  --score-yellow-bg: #fef3c7;
+  --score-red: #dc2626;
+  --score-red-bg: #fee2e2;
+
+  --flag-low: #fefce8;
+  --flag-low-border: #fde047;
+  --flag-low-text: #713f12;
+  --flag-medium: #fff7ed;
+  --flag-medium-border: #f97316;
+  --flag-medium-text: #7c2d12;
+  --flag-high: #fef2f2;
+  --flag-high-border: #ef4444;
+  --flag-high-text: #7f1d1d;
+
+  --text: #111827;
   --text-muted: #6b7280;
+  --text-subtle: #9ca3af;
   --border: #e5e7eb;
+  --border-strong: #d1d5db;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.05);
-  --radius: 8px;
-  --sidebar-width: 240px;
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 10px 24px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.06);
+
+  --radius-sm: 4px;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --radius-full: 9999px;
+
+  --sidebar-width: 248px;
+
+  --transition: 0.15s ease;
 }
 
 html, body {
@@ -35,6 +61,7 @@ html, body {
   font-size: 14px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 #app {
@@ -52,4 +79,22 @@ button {
   cursor: pointer;
   font-family: inherit;
   font-size: 14px;
+}
+
+/* ─── Skeleton loader ───────────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position: 600px 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
+  background-size: 1200px 100%;
+  animation: shimmer 1.4s infinite linear;
+  border-radius: var(--radius);
+}
+
+/* ─── Spinner ───────────────────────────────────────────────────── */
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }

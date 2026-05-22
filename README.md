@@ -32,6 +32,7 @@ HighLevel UI
 | Backend | Node.js (ESM), Express |
 | LLM | Groq API — `llama-3.3-70b-versatile` |
 | Frontend | Vue 3, Vite, Vue Router, Pinia, Axios |
+| UI | Hand-built design system — CSS custom properties, inline SVG icons, skeleton loaders |
 | State | In-memory store (no database) |
 | Embed | HL Marketplace App (OAuth iframe) + Vanilla JS widget fallback |
 | Hosting | Railway (backend), Vercel (frontend) |
@@ -247,7 +248,7 @@ voiceai-observability-copilot/
 
 **Product:** This tool solves a real operational problem — Voice AI teams have no scalable way to monitor agent quality across hundreds of calls. The key product decision was to scope to two tight loops (Monitor + Analyze) rather than overengineer a full platform. The HighLevel embed was chosen as an iframe widget over a full Marketplace app because it ships in hours, not weeks, and demonstrates the core value proposition without requiring HL OAuth approval — the right call for a time-boxed assignment.
 
-**Design:** The UI is intentionally minimal and information-dense — no external component library, just a hand-built design system with CSS custom properties. Color-coded score badges (green/yellow/red thresholds), severity-banded flagged turn highlighting, and a fixed sidebar layout were all chosen to let analysts process call quality at a glance without clicking into every row. The HighLevel widget mirrors HL's own dark-navy `#0f3460` brand color so the panel feels native rather than foreign.
+**Design:** The UI is intentionally minimal and information-dense — no external component library, just a hand-built design system with CSS custom properties and inline SVGs. The sidebar has a custom audio-waveform logo, per-item icons, an active-state accent bar, and a live-status pulse indicator. Agent cards show a KPI pass-rate progress bar and a color-coded health stripe at the top. Score badges are distinctly green/yellow/red with borders. Every async action has a skeleton loader; every empty state has an illustrated placeholder with a CTA. The transcript viewer uses distinct agent/caller avatars with severity-banded flagged turns and inline reason callouts. The HighLevel widget mirrors HL's own dark-navy `#0f3460` brand color so the panel feels native rather than foreign.
 
 **Engineering:** The backend uses a clean separation of concerns — routes → controllers → services → in-memory store — making it easy to swap the store for a real database later. Groq was chosen over OpenAI for zero-cost LLM calls with comparable quality on structured JSON output tasks. The Vite dev proxy eliminates CORS complexity entirely, and the Pinia store on the frontend caches per-agent data to avoid redundant API calls. The widget is a vanilla JS IIFE — no build step, no dependencies, paste-and-go.
 
