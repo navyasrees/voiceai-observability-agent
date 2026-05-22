@@ -4,17 +4,25 @@ import cors from 'cors';
 
 import transcriptRoutes from './src/routes/transcripts.js';
 import agentRoutes from './src/routes/agents.js';
+import oauthRoutes from './src/routes/oauth.js';
 import { error } from './src/utils/response.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(cors());
+app.use(cors({
+  origin: [
+    'http://localhost:5173',
+    'https://voiceai-observability-agent-fronten.vercel.app',
+  ],
+  credentials: true,
+}));
 app.use(express.json());
 
 // Routes
 app.use('/api/transcripts', transcriptRoutes);
 app.use('/api/agents', agentRoutes);
+app.use('/oauth', oauthRoutes);
 
 // 404 handler
 app.use((req, res) => {

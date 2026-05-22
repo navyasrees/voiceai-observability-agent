@@ -55,3 +55,19 @@ export function saveAnalysis(callId, analysis) {
 export function getTranscriptsByAgent(agentId) {
   return transcripts.filter((t) => t.agent_id === agentId);
 }
+
+// ─── OAuth token store ────────────────────────────────────────────────────────
+
+const oauthTokens = {};
+
+export function saveOAuthToken(locationId, token) {
+  oauthTokens[locationId] = token;
+}
+
+export function getOAuthToken(locationId) {
+  return oauthTokens[locationId] ?? null;
+}
+
+export function hasAnyOAuthToken() {
+  return Object.keys(oauthTokens).length > 0;
+}
