@@ -22,6 +22,50 @@
     ]
   },
   {
+    "call_id": "call-seed-003",
+    "agent_id": "agent-001",
+    "uploaded_at": "2026-05-21T09:15:00Z",
+    "turns": [
+      { "turn": 1, "speaker": "Agent", "timestamp": "00:00", "text": "Hi there, what can I do for you?" },
+      { "turn": 2, "speaker": "Caller", "timestamp": "00:03", "text": "Hey, I saw your ad online. I run a small e-commerce store and I need more traffic." },
+      { "turn": 3, "speaker": "Agent", "timestamp": "00:09", "text": "Sure, we can definitely help with that. What's your name?" },
+      { "turn": 4, "speaker": "Caller", "timestamp": "00:13", "text": "I'm Priya Nair." },
+      { "turn": 5, "speaker": "Agent", "timestamp": "00:16", "text": "Hi Priya! So what kind of traffic are you looking for, organic or paid?" },
+      { "turn": 6, "speaker": "Caller", "timestamp": "00:22", "text": "Probably paid, like Google Ads or something. I've tried Facebook but it didn't work well." },
+      { "turn": 7, "speaker": "Agent", "timestamp": "00:29", "text": "Yeah Google Ads can be really effective for e-commerce. We could set up a campaign for you." },
+      { "turn": 8, "speaker": "Caller", "timestamp": "00:36", "text": "Cool. How much does that typically cost?" },
+      { "turn": 9, "speaker": "Agent", "timestamp": "00:40", "text": "It depends on your goals but we can work with most budgets." },
+      { "turn": 10, "speaker": "Caller", "timestamp": "00:45", "text": "I'm thinking like $300 to $500 a month for now." },
+      { "turn": 11, "speaker": "Agent", "timestamp": "00:50", "text": "That could work! Let me connect you with someone from our team who can give you more details." },
+      { "turn": 12, "speaker": "Caller", "timestamp": "00:55", "text": "Okay, should I schedule something or will someone call me?" },
+      { "turn": 13, "speaker": "Agent", "timestamp": "01:00", "text": "I'll have someone reach out to you. Can I get your email?" },
+      { "turn": 14, "speaker": "Caller", "timestamp": "01:04", "text": "Sure, it's priya@nairstore.com." },
+      { "turn": 15, "speaker": "Agent", "timestamp": "01:08", "text": "Perfect, we'll be in touch soon!" }
+    ]
+  },
+  {
+    "call_id": "call-seed-004",
+    "agent_id": "agent-001",
+    "uploaded_at": "2026-05-22T14:00:00Z",
+    "turns": [
+      { "turn": 1, "speaker": "Agent", "timestamp": "00:00", "text": "Thanks for calling Nova Digital Marketing. I'm Alex, how can I help you today?" },
+      { "turn": 2, "speaker": "Caller", "timestamp": "00:06", "text": "Hi, I'm looking into marketing agencies for my consulting firm." },
+      { "turn": 3, "speaker": "Agent", "timestamp": "00:11", "text": "Great, you've reached the right place! Can I start by getting your name and company?" },
+      { "turn": 4, "speaker": "Caller", "timestamp": "00:16", "text": "Sure, I'm Daniel Reeves from Reeves Strategy Group." },
+      { "turn": 5, "speaker": "Agent", "timestamp": "00:21", "text": "Thanks Daniel! What's your primary marketing challenge right now — is it lead gen, brand awareness, or something else?" },
+      { "turn": 6, "speaker": "Caller", "timestamp": "00:28", "text": "Mainly lead generation. We get referrals but we want a more predictable pipeline." },
+      { "turn": 7, "speaker": "Agent", "timestamp": "00:34", "text": "That's a really common goal for consulting firms. What's your monthly budget for marketing?" },
+      { "turn": 8, "speaker": "Caller", "timestamp": "00:39", "text": "We're thinking around $2,000 to $3,000 a month to start." },
+      { "turn": 9, "speaker": "Agent", "timestamp": "00:44", "text": "Perfect, that works really well with our packages. When are you looking to get started?" },
+      { "turn": 10, "speaker": "Caller", "timestamp": "00:49", "text": "Ideally within the next few weeks. We have a product launch coming up." },
+      { "turn": 11, "speaker": "Agent", "timestamp": "00:54", "text": "Great timing! I'd love to set up a 30-minute discovery call with our strategy team. Would Thursday or Friday this week work?" },
+      { "turn": 12, "speaker": "Caller", "timestamp": "01:00", "text": "Thursday afternoon works." },
+      { "turn": 13, "speaker": "Agent", "timestamp": "01:04", "text": "Perfect, I'll send a calendar invite to your email. What address should I use?" },
+      { "turn": 14, "speaker": "Caller", "timestamp": "01:08", "text": "daniel@reevesstrategy.com." },
+      { "turn": 15, "speaker": "Agent", "timestamp": "01:13", "text": "Got it Daniel. You'll get a confirmation email shortly." }
+    ]
+  },
+  {
     "call_id": "call-seed-002",
     "agent_id": "agent-002",
     "uploaded_at": "2026-05-20T11:30:00Z",
@@ -37,6 +81,46 @@
       { "turn": 9, "speaker": "Agent", "timestamp": "00:42", "text": "You'll want to fast for at least 8 hours before the appointment and bring your insurance card." },
       { "turn": 10, "speaker": "Caller", "timestamp": "00:48", "text": "Got it, thanks." },
       { "turn": 11, "speaker": "Agent", "timestamp": "00:51", "text": "You're all set Jordan. See you Friday!" }
+    ]
+  },
+  {
+    "call_id": "call-seed-005",
+    "agent_id": "agent-002",
+    "uploaded_at": "2026-05-21T10:00:00Z",
+    "turns": [
+      { "turn": 1, "speaker": "Agent", "timestamp": "00:00", "text": "Hi, calling to remind you about your appointment tomorrow." },
+      { "turn": 2, "speaker": "Caller", "timestamp": "00:04", "text": "Uh, who is this for?" },
+      { "turn": 3, "speaker": "Agent", "timestamp": "00:07", "text": "Is this the number for a patient at Riverside Medical?" },
+      { "turn": 4, "speaker": "Caller", "timestamp": "00:11", "text": "Yeah, I'm Sam Torres." },
+      { "turn": 5, "speaker": "Agent", "timestamp": "00:14", "text": "Great! Your appointment is tomorrow. Just wanted to make sure you're coming." },
+      { "turn": 6, "speaker": "Caller", "timestamp": "00:18", "text": "What time is it? I don't remember." },
+      { "turn": 7, "speaker": "Agent", "timestamp": "00:22", "text": "It's at 9:00 AM." },
+      { "turn": 8, "speaker": "Caller", "timestamp": "00:25", "text": "And where? Which location?" },
+      { "turn": 9, "speaker": "Agent", "timestamp": "00:28", "text": "I believe it's the Main Street location but you may want to double check." },
+      { "turn": 10, "speaker": "Caller", "timestamp": "00:33", "text": "That's not very reassuring. Also I actually need to cancel, I have a conflict." },
+      { "turn": 11, "speaker": "Agent", "timestamp": "00:38", "text": "Oh okay, do you want to reschedule?" },
+      { "turn": 12, "speaker": "Caller", "timestamp": "00:41", "text": "Yeah when's the next available?" },
+      { "turn": 13, "speaker": "Agent", "timestamp": "00:45", "text": "I'd have to check. Can I call you back about that?" },
+      { "turn": 14, "speaker": "Caller", "timestamp": "00:49", "text": "I mean... I guess? That seems like something you should know on this call." },
+      { "turn": 15, "speaker": "Agent", "timestamp": "00:53", "text": "Sorry about that. We'll be in touch soon!" }
+    ]
+  },
+  {
+    "call_id": "call-seed-006",
+    "agent_id": "agent-002",
+    "uploaded_at": "2026-05-22T15:30:00Z",
+    "turns": [
+      { "turn": 1, "speaker": "Agent", "timestamp": "00:00", "text": "Hi, this is a reminder call from Riverside Medical. Am I speaking with Lisa Chen?" },
+      { "turn": 2, "speaker": "Caller", "timestamp": "00:05", "text": "Yes, this is Lisa." },
+      { "turn": 3, "speaker": "Agent", "timestamp": "00:08", "text": "Hi Lisa! I'm calling to remind you about your appointment tomorrow, Wednesday May 22nd at 11:00 AM at our Oak Avenue clinic." },
+      { "turn": 4, "speaker": "Caller", "timestamp": "00:16", "text": "Yes, I have it on my calendar. I'll be there." },
+      { "turn": 5, "speaker": "Agent", "timestamp": "00:20", "text": "Wonderful! Will you be able to make it on time?" },
+      { "turn": 6, "speaker": "Caller", "timestamp": "00:24", "text": "Should be fine, yes." },
+      { "turn": 7, "speaker": "Agent", "timestamp": "00:27", "text": "Great, just checking. Is there anything you'd like to ask before the appointment?" },
+      { "turn": 8, "speaker": "Caller", "timestamp": "00:32", "text": "Actually yes — do I need to fast beforehand or anything?" },
+      { "turn": 9, "speaker": "Agent", "timestamp": "00:37", "text": "That's a great question — I'm not actually sure what type of appointment you have, so I can't say for certain. You'd want to call the office directly to confirm." },
+      { "turn": 10, "speaker": "Caller", "timestamp": "00:45", "text": "Oh okay. What's the office number?" },
+      { "turn": 11, "speaker": "Agent", "timestamp": "00:49", "text": "It should be on the appointment confirmation you received. Have a great appointment Lisa, bye!" }
     ]
   }
 ]
