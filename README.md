@@ -81,7 +81,7 @@ The Vite dev server proxies all `/api` requests to `http://localhost:3001` — n
 This tool is embedded inside HighLevel as a private Marketplace App. To install:
 
 1. Open your HighLevel agency account
-2. Navigate to the install link: *(Navya to add install link here)*
+2. Navigate to the install link: https://marketplace.gohighlevel.com/v2/oauth/chooselocation?response_type=code&redirect_uri=https%3A%2F%2Fvoiceai-observability-agent-production.up.railway.app%2Foauth%2Fcallback&scope=locations.readonly&version_id=6a1052a70b5e7f83ed23c187
 3. Click **Install** and approve the OAuth permissions
 4. You will see "Voice AI Copilot connected successfully"
 5. Return to your HighLevel agency dashboard
