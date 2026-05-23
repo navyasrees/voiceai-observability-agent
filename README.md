@@ -1,117 +1,69 @@
 # Voice AI Observability Copilot
 
-An AI-powered observability tool that automates the monitoring and analysis of Voice AI agent call transcripts — scoring them against agent KPIs, flagging problem segments, and surfacing actionable recommendations, all powered by Groq (LLaMA 3.3 70B), embedded directly inside HighLevel via a lightweight custom JS widget.
+An AI-powered observability tool for HighLevel Voice AI agents that automatically monitors call transcripts, scores performance against custom KPIs, flags deviations, and surfaces actionable script and prompt recommendations — embedded natively inside HighLevel.
 
 ---
 
 ## Architecture
 
-The system has two layers — a Node.js/Express backend that runs LLM analysis, and a Vue 3 frontend dashboard that visualizes results. A self-contained JavaScript widget embeds the dashboard into HighLevel as a side panel.
-
 ```
-HighLevel UI
-└── Custom JS Widget  (highlevel-widget.js)
-    └── iframe → Vue 3 Dashboard  (Vercel)
-                └── Axios → Express Backend  (Railway)
-                            └── Groq LLM API
+HighLevel UI (Agency Dashboard)
+  └── Marketplace App (OAuth 2.0 install)
+        └── Custom Page iframe → Vue 3 Dashboard (Vercel)
+                    └── Axios → Express Backend (Railway)
+                                  └── Groq LLM API
 ```
 
-**How it works end-to-end:**
-
-1. A call transcript is uploaded (via the dashboard UI or API)
-2. The backend stores it in-memory and associates it with the agent
-3. The analyst clicks "Analyze" — the backend sends the transcript + agent KPIs to Groq (LLaMA 3.3 70B) via a structured prompt
-4. Groq returns a JSON object: overall score, per-KPI pass/fail, flagged segments with severity, and recommendations
-5. The dashboard renders the analysis: color-coded score badge, KPI scorecard, flagged turn highlighting in the transcript viewer, and recommendation cards
-6. The HighLevel widget embeds the entire dashboard as an iframe in a fixed side panel — accessible from any HL page without leaving the CRM
-
-**Stack:**
-
-| Layer | Technology |
-|---|---|
-| Backend | Node.js (ESM), Express |
-| LLM | Groq API — `llama-3.3-70b-versatile` |
-| Frontend | Vue 3, Vite, Vue Router, Pinia, Axios |
-| UI | Hand-built design system — CSS custom properties, inline SVG icons, skeleton loaders |
-| State | In-memory store (no database) |
-| Embed | HL Marketplace App (OAuth iframe) + Vanilla JS widget fallback |
-| Hosting | Railway (backend), Vercel (frontend) |
+The backend is a Node.js Express server with an in-memory store that handles transcript ingestion, per-agent KPI management, and LLM orchestration via the Groq API. The frontend is a Vue 3 single-page application (Vite + Pinia + Vue Router) providing an agent overview dashboard, per-agent call history, and a full call drilldown view with transcript viewer and analysis panels. Call analysis is powered by Groq's `llama-3.3-70b-versatile` model, which evaluates each transcript against the agent's configured KPIs and returns a structured JSON object containing an overall score, per-KPI pass/fail results, flagged segments with severity ratings, and typed recommendations. The tool is embedded inside HighLevel as a private Marketplace App — it installs via OAuth 2.0 and loads the Vue dashboard as an iframe in the HL agency sidebar, making it feel native to the platform.
 
 ---
 
 ## What is Real vs Mocked
 
 **Real (fully functional):**
-- Transcript upload via UI and REST API
-- LLM analysis via Groq — real API calls, real JSON responses
-- KPI scoring — per-KPI pass/fail evaluation with reason text
-- Flagged segment detection with low/medium/high severity
-- Actionable recommendations generated per call
-- Full dashboard — Overview, Agent Detail, Call Drilldown views
-- HighLevel embed — both Marketplace App (OAuth iframe) and Custom JS widget paths are implemented
-- OAuth 2.0 flow — `/oauth/initiate`, `/oauth/callback`, `/oauth/status` endpoints are real and functional
 
-**Mocked / Simplified:**
-- Real-time transcript streaming from HighLevel's live call API — transcripts are uploaded manually via the UI or API instead; in-memory store resets on server restart
-- OAuth token persistence — tokens are stored in-memory only (no database); resets on server restart
+- Transcript upload and ingestion via dashboard UI and REST API
+- LLM-based call analysis via Groq — KPI scoring, flagged segment detection, typed recommendations
+- Editable KPIs per agent directly from the dashboard UI
+- Use Actions — flagging segments for human review or script training, persisted in-memory and confirmed via API
+- Aggregate metrics across all analyzed calls (average score, KPI pass rates, top recommendations)
+- HighLevel Marketplace App install with OAuth 2.0 (initiate → consent → callback → token storage)
+- Full Vue 3 dashboard embedded natively inside HighLevel as an iframe
+
+**Mocked (documented limitations):**
+
+- Real-time transcript streaming from the HighLevel live call API — transcripts are uploaded manually via the UI or REST API instead
+- Persistent database — the in-memory store resets on server restart; no database is connected
+- HighLevel Marketplace App review — the app is private/draft status; install is via direct link rather than the public marketplace
 
 ---
 
 ## How to Run Locally
 
-**Prerequisites:**
-- Node.js v18 or later
-- A free [Groq API key](https://console.groq.com) — no credit card required
+**Prerequisites:** Node.js 18+, a free Groq API key from [console.groq.com](https://console.groq.com)
 
-### Step 1 — Clone the repo
+**Backend:**
 
 ```bash
-git clone <your-repo-url>
-cd voiceai-observability-copilot
-```
-
-### Step 2 — Configure the backend
-
-```bash
-cd backend
+git clone https://github.com/navyasrees/voiceai-observability-agent
+cd voiceai-observability-agent/backend
+npm install
 cp .env.example .env
+# Add your GROQ_API_KEY to .env
+npm start
+# Backend runs on http://localhost:3001
 ```
 
-Open `backend/.env` and add your Groq key:
-
-```
-GROQ_API_KEY=your_groq_api_key_here
-PORT=3001
-```
-
-### Step 3 — Install dependencies
+**Frontend:**
 
 ```bash
-cd backend && npm install
-cd ../frontend && npm install
-```
-
-### Step 4 — Start the backend
-
-```bash
-cd backend
+cd ../frontend
+npm install
 npm run dev
+# Frontend runs on http://localhost:5173
 ```
 
-Server starts at `http://localhost:3001`
-
-### Step 5 — Start the frontend
-
-Open a second terminal tab:
-
-```bash
-cd frontend
-npm run dev
-```
-
-Dashboard opens at `http://localhost:5173`
-
-The Vite dev server proxies all `/api` requests to the backend — no CORS config needed.
+The Vite dev server proxies all `/api` requests to `http://localhost:3001` — no CORS configuration needed locally.
 
 ---
 
@@ -124,9 +76,21 @@ The Vite dev server proxies all `/api` requests to the backend — no CORS confi
 
 ---
 
-## API Reference
+## HighLevel Integration
 
-**Transcript & Agent endpoints:**
+This tool is embedded inside HighLevel as a private Marketplace App. To install:
+
+1. Open your HighLevel agency account
+2. Navigate to the install link: *(Navya to add install link here)*
+3. Click **Install** and approve the OAuth permissions
+4. You will see "Voice AI Copilot connected successfully"
+5. Return to your HighLevel agency dashboard
+6. Scroll down the left sidebar — click **Observability Copilot**
+7. The full dashboard loads natively inside HighLevel
+
+---
+
+## API Reference
 
 | Method | Endpoint | Description |
 |---|---|---|
@@ -138,118 +102,21 @@ The Vite dev server proxies all `/api` requests to the backend — no CORS confi
 | `POST` | `/api/transcripts/upload` | Upload a new transcript |
 | `GET` | `/api/transcripts/:call_id` | Single transcript + analysis result |
 | `POST` | `/api/transcripts/:call_id/analyze` | Run LLM analysis on a transcript |
-
-**OAuth endpoints:**
-
-| Method | Endpoint | Description |
-|---|---|---|
+| `POST` | `/api/transcripts/:call_id/segments/:turn/action` | Flag a segment for review or training |
 | `GET` | `/oauth/initiate` | Redirect to HL OAuth consent page |
-| `GET` | `/oauth/callback` | Receive auth code, exchange for token, store it |
+| `GET` | `/oauth/callback` | Exchange auth code for token |
 | `GET` | `/oauth/status` | Returns `{ connected: true/false }` |
 
-All API responses follow the same envelope:
-```json
-{ "success": true, "data": { ... } }
-{ "success": false, "message": "...", "code": 400 }
-```
+All responses follow the envelope: `{ "success": true, "data": { ... } }` or `{ "success": false, "message": "...", "code": 400 }`.
 
 ---
 
-## HighLevel Integration
+## Team of One: Ownership Notes
 
-There are two integration paths — a full Marketplace App (recommended) and a Custom JS widget fallback.
+**Product.** The core product decision was to build around two tight loops — Monitor (upload transcripts, view aggregate health) and Analyze (score against KPIs, surface flags and recommendations) — rather than overengineer a full platform in a time-boxed assignment. The iframe embed approach was chosen over a full Marketplace App submission because it ships in hours rather than weeks and demonstrates the value proposition without waiting for HL app review; a proper Marketplace listing would be the next step for a production release. KPI editing from the UI was added to close the observability parameter loop required by the assignment — users can now define what "good" looks like for each agent and immediately run analysis against those updated criteria. Groq was chosen over OpenAI because it offers zero-cost LLM calls with comparable structured JSON output quality, which matters when you need to iterate quickly on prompt design without burning API credits.
 
-### Option A — Marketplace App (Native Embed)
+**Design.** The color-coded score badge system uses green (≥80), yellow (≥60), and red (<60) thresholds with matching background fills and borders, so quality is scannable at a glance without reading a number. The transcript viewer uses left-border severity coloring on flagged turns rather than inline highlights because it avoids disrupting the reading flow — the eye catches the border first and then reads into the reason callout below. Recommendations appear in two places by design: per-call in the drilldown view (for immediate action after reviewing a specific call) and aggregated on the agent page (for identifying systemic patterns across many calls). The Use Actions buttons use orange for human review and blue for script training because these map to conventional urgency associations — orange signals "a person needs to look at this" while blue signals "add this to the training pipeline."
 
-This is the primary integration. The Vue dashboard loads as a native HL app panel via OAuth.
+**Engineering.** The in-memory store was a deliberate scope decision: it eliminates the database setup and schema migration overhead that would be irrelevant for an assignment demo, while the clean separation of routes → controllers → services → store makes it straightforward to swap in a real database later by replacing only the store layer. The LLM prompt is designed around typed recommendations — `PROMPT CHANGE`, `SCRIPT CHANGE`, and `AGENT ADJUSTMENT` — because requiring a type prefix forces the model to think categorically about what kind of change is needed before writing the specific wording, which consistently produces more actionable output than open-ended instruction. In development, the Vite dev proxy routes `/api` to `localhost:3001`, eliminating CORS complexity; in production, the `VITE_API_URL` environment variable overrides this to point at the Railway deployment. Component size was kept under 150 lines wherever possible by extracting sub-components — for example, `KpiEditor.vue` handles all edit-mode logic so `AgentDetail.vue` stays focused on layout and data fetching.
 
-**Step 1 — Register the app** at [marketplace.gohighlevel.com](https://marketplace.gohighlevel.com):
-- App Name: `Voice AI Observability Copilot`
-- App Type: `Private`, Distribution: `Agency & Sub-account`
-- Redirect URL: `https://voiceai-observability-agent-production.up.railway.app/oauth/callback`
-- Copy **Client ID** and **Client Secret** → add to `backend/.env`
-- Under App Config, set iframe URL: `https://voiceai-observability-agent-fronten.vercel.app`
-
-**Step 2 — Install the app** in your HL sub-account:
-- Go to App Marketplace → find Voice AI Copilot → click Install
-- HL redirects to `/oauth/initiate` → backend redirects to HL's consent page
-- Approve the app → HL sends auth code to `/oauth/callback`
-- Backend exchanges code for token, shows "App connected successfully"
-
-**Step 3 — Use the app:**
-- Navigate inside the HL sub-account — Voice AI Copilot appears in the HL sidebar
-- Clicking it loads the iframe with the full Vue dashboard natively inside HL
-
-### Option B — Custom JS Widget (Fallback)
-
-For quick testing without a Marketplace listing, paste `highlevel-widget.js` into HL:
-
-**Step 1:** Log into your HighLevel sub-account
-
-**Step 2:** Go to **Settings → Company → Custom JavaScript**
-
-**Step 3:** Paste the full contents of `highlevel-widget.js`
-
-**Step 4:** Save — the Voice AI Copilot panel appears on the right side of every HL page
-
-The panel opens by default. Click the header bar to collapse it — a "Voice AI Copilot" button appears in the bottom-right corner to reopen it.
-
----
-
-## Project Structure
-
-```
-voiceai-observability-copilot/
-├── highlevel-widget.js             HighLevel embed widget (paste into HL Custom JS)
-├── README.md                       This file
-├── backend/
-│   ├── server.js                   Entry point — Express app setup
-│   ├── .env.example                API key + port template
-│   ├── mock-data/
-│   │   ├── agents.json             Seed agents with goals and KPIs
-│   │   └── transcripts.json        Seed call transcripts
-│   └── src/
-│       ├── routes/
-│       │   ├── agents.js
-│       │   ├── transcripts.js
-│       │   └── oauth.js            HL OAuth flow (initiate, callback, status)
-│       ├── controllers/
-│       │   ├── agentController.js
-│       │   └── transcriptController.js
-│       ├── services/
-│       │   └── analysisService.js  Groq prompt + JSON parsing
-│       ├── store/
-│       │   └── index.js            In-memory data store
-│       └── utils/
-│           └── response.js         Consistent success/error helpers
-└── frontend/
-    ├── vite.config.js              Vite config + /api proxy
-    └── src/
-        ├── api/index.js            Axios instance — all API calls
-        ├── router/index.js         3 routes: Overview, AgentDetail, CallDrilldown
-        ├── store/agents.js         Pinia store
-        ├── views/
-        │   ├── AgentsOverview.vue
-        │   ├── AgentDetail.vue
-        │   └── CallDrilldown.vue
-        └── components/
-            ├── ScoreBadge.vue
-            ├── AgentCard.vue
-            ├── KpiResultRow.vue
-            ├── FlaggedSegment.vue
-            ├── RecommendationCard.vue
-            ├── TranscriptViewer.vue
-            └── UploadTranscriptModal.vue
-```
-
----
-
-## Team of One — Ownership Notes
-
-**Product:** This tool solves a real operational problem — Voice AI teams have no scalable way to monitor agent quality across hundreds of calls. The key product decision was to scope to two tight loops (Monitor + Analyze) rather than overengineer a full platform. The HighLevel embed was chosen as an iframe widget over a full Marketplace app because it ships in hours, not weeks, and demonstrates the core value proposition without requiring HL OAuth approval — the right call for a time-boxed assignment.
-
-**Design:** The UI is intentionally minimal and information-dense — no external component library, just a hand-built design system with CSS custom properties and inline SVGs. The sidebar has a custom audio-waveform logo, per-item icons, an active-state accent bar, and a live-status pulse indicator. Agent cards show a KPI pass-rate progress bar and a color-coded health stripe at the top. Score badges are distinctly green/yellow/red with borders. Every async action has a skeleton loader; every empty state has an illustrated placeholder with a CTA. The transcript viewer uses distinct agent/caller avatars with severity-banded flagged turns and inline reason callouts. The HighLevel widget mirrors HL's own dark-navy `#0f3460` brand color so the panel feels native rather than foreign.
-
-**Engineering:** The backend uses a clean separation of concerns — routes → controllers → services → in-memory store — making it easy to swap the store for a real database later. Groq was chosen over OpenAI for zero-cost LLM calls with comparable quality on structured JSON output tasks. The Vite dev proxy eliminates CORS complexity entirely, and the Pinia store on the frontend caches per-agent data to avoid redundant API calls. The widget is a vanilla JS IIFE — no build step, no dependencies, paste-and-go.
-
-**QA:** All 8 API endpoints were manually verified via curl against live seed data. The frontend was verified against a production Vite build (zero errors). Every async action has a loading state and error state. Known limitations: the in-memory store resets on server restart (by design — no persistence layer scoped for this phase), and real-time transcript ingestion from HighLevel's live call API is mocked with manually uploaded JSON.
+**QA.** All 12 API endpoints were manually verified via curl against live seed data, including the new segment action endpoint which correctly rejects invalid action values and non-existent call IDs. The frontend was verified against a production Vite build with zero errors. Every async action has a loading state (spinner) and error state (inline message). The known limitations are: the in-memory store resets on server restart (by design — no persistence layer in this phase), there is no authentication on API endpoints (single-tenant demo environment only), and the app is single-tenant (one HighLevel location per server instance). For a production deployment the next steps would be: add a persistent database (PostgreSQL or MongoDB) for transcripts and analysis results, set up a webhook listener for HighLevel's live call API to replace manual upload, add per-request API key authentication, and implement multi-tenant isolation keyed by HL location ID.

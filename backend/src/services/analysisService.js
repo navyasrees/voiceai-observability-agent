@@ -4,7 +4,19 @@ const client = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 const MODEL = 'llama-3.3-70b-versatile';
 
-const SYSTEM_PROMPT = `You are a Voice AI Quality Assurance evaluator. You will be given a Voice AI agent's goal, its success KPIs, and a call transcript. Your job is to evaluate the call strictly against the KPIs and return a structured JSON analysis. Be specific about which turn in the transcript caused a failure. Do not invent information that is not present in the transcript. Return ONLY valid JSON — no markdown, no explanation, no code fences.`;
+const SYSTEM_PROMPT = `You are a Voice AI Quality Assurance evaluator. You will be given a Voice AI agent's goal, its success KPIs, and a call transcript. Your job is to evaluate the call strictly against the KPIs and return a structured JSON analysis. Be specific about which turn in the transcript caused a failure. Do not invent information that is not present in the transcript. Return ONLY valid JSON — no markdown, no explanation, no code fences.
+
+Each recommendation must be one of three types:
+PROMPT CHANGE — suggest exact wording to add or change in the agent system prompt.
+SCRIPT CHANGE — suggest a specific step or line to add to the agent call script.
+AGENT ADJUSTMENT — suggest a specific behavioral change for the agent.
+
+Format every recommendation as: "[TYPE]: [specific actionable change]"
+Example: "PROMPT CHANGE: Add to system prompt — Always collect the caller email address before discussing pricing or scheduling."
+Example: "SCRIPT CHANGE: After greeting, add — Can I get your full name and email so I can pull up your account?"
+Example: "AGENT ADJUSTMENT: When the caller expresses hesitation, pause and ask an open-ended question before continuing the pitch."
+
+Never write vague suggestions. Every recommendation must be immediately actionable by the agent developer.`;
 
 /**
  * Formats transcript turns into a readable string for the prompt.
@@ -54,8 +66,9 @@ Return a JSON object with this exact shape:
     }
   ],
   "recommendations": [
-    "<Actionable fix suggestion 1>",
-    "<Actionable fix suggestion 2>"
+    "PROMPT CHANGE: Add to agent system prompt — [exact wording to add]",
+    "SCRIPT CHANGE: Add step to call script — [exact step wording]",
+    "AGENT ADJUSTMENT: [specific behavioral change for the agent]"
   ]
 }`;
 }

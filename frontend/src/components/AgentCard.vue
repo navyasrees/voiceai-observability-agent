@@ -25,7 +25,7 @@
       <div class="stat-divider"></div>
       <div class="stat">
         <span class="stat-value" :class="highCount > 0 ? 'value-red' : ''">{{ highCount }}</span>
-        <span class="stat-label">High Flags</span>
+        <span class="stat-label">Severe Issues</span>
       </div>
     </div>
 
@@ -42,11 +42,14 @@
 
     <!-- Top failure KPI -->
     <div v-if="topFailingKpi" class="top-failure">
-      <svg class="failure-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8">
-        <path d="M8 2L14 13H2L8 2z" stroke-linejoin="round"/>
-        <path d="M8 7v3" stroke-linecap="round"/>
-        <circle cx="8" cy="11.5" r="0.5" fill="currentColor"/>
-      </svg>
+      <div class="failure-label">
+        <svg class="failure-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M8 2L14 13H2L8 2z" stroke-linejoin="round"/>
+          <path d="M8 7v3" stroke-linecap="round"/>
+          <circle cx="8" cy="11.5" r="0.5" fill="currentColor"/>
+        </svg>
+        <span class="failure-heading">Most Failing KPI</span>
+      </div>
       <span class="failure-text">{{ truncate(topFailingKpi, 80) }}</span>
     </div>
 
@@ -267,26 +270,40 @@ function truncate(str, len) {
 /* ─── Top failure ────────────────────────────────── */
 .top-failure {
   display: flex;
-  align-items: flex-start;
-  gap: 6px;
+  flex-direction: column;
+  gap: 4px;
   background: #fff5f5;
   border: 1px solid #fecaca;
   border-radius: 6px;
   padding: 8px 10px;
 }
 
+.failure-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
 .failure-icon {
-  width: 13px;
-  height: 13px;
+  width: 12px;
+  height: 12px;
   color: var(--score-red);
   flex-shrink: 0;
-  margin-top: 1px;
+}
+
+.failure-heading {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--score-red);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
 .failure-text {
   font-size: 12px;
   color: #991b1b;
   line-height: 1.4;
+  padding-left: 17px;
 }
 
 /* ─── Footer ─────────────────────────────────────── */

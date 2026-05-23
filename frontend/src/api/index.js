@@ -13,3 +13,6 @@ export const uploadTranscript = (payload) => http.post('/transcripts/upload', pa
 export const analyzeTranscript = (callId) => http.post(`/transcripts/${callId}/analyze`);
 export const getTranscript = (callId) => http.get(`/transcripts/${callId}`);
 export const updateAgentKpis = (id, kpis) => http.post(`/agents/${id}/kpis`, { kpis });
+export const flagSegment = (callId, turn, action) => http.post(`/transcripts/${callId}/segments/${turn}/action`, { action });
+export const getCallSegmentActions = (callId) => http.get(`/transcripts/${callId}/segment-actions`);
+export const getAgentSegmentActions = (agentId) => http.get(`/agents/${agentId}/segment-actions`);

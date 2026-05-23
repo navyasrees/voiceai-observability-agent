@@ -174,6 +174,80 @@
       </div>
     </section>
 
+    <!-- High Severity Issues -->
+    <section v-if="highSeveritySegments.length > 0" class="section">
+      <div class="section-header">
+        <h2 class="section-title">
+          <svg class="section-icon severity-icon-red" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 2L16 15H2L9 2z"/>
+            <path d="M9 8v3.5"/>
+            <circle cx="9" cy="13.5" r="0.5" fill="currentColor" stroke="none"/>
+          </svg>
+          High Severity Issues
+        </h2>
+        <span class="count-badge count-badge-red">{{ highSeveritySegments.length }}</span>
+      </div>
+      <p class="section-description">These transcript moments were flagged as high severity across analyzed calls. Review and take action directly below.</p>
+      <div class="flagged-issues-list">
+        <div
+          v-for="seg in highSeveritySegments"
+          :key="`${seg.call_id}-${seg.turn}`"
+          class="flagged-issue-item"
+        >
+          <div class="issue-source">
+            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="10" height="10" rx="2"/>
+              <path d="M5 5h4M5 8h2"/>
+            </svg>
+            <RouterLink :to="`/agents/${agentId}/calls/${seg.call_id}`" class="issue-call-link">
+              {{ seg.call_id }}
+            </RouterLink>
+            <span class="issue-date">{{ formatDate(seg.uploaded_at) }}</span>
+          </div>
+          <FlaggedSegment :segment="seg" :call-id="seg.call_id" :initial-actions="agentActions" />
+        </div>
+      </div>
+    </section>
+
+    <!-- Script Training Queue -->
+    <section v-if="trainingQueue.length > 0" class="section">
+      <div class="section-header">
+        <h2 class="section-title">
+          <svg class="section-icon training-icon-blue" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="14" height="12" rx="2"/>
+            <path d="M6 7h6M6 10h4"/>
+            <path d="M13 1v4M15 3h-4"/>
+          </svg>
+          Script Training Queue
+        </h2>
+        <span class="count-badge count-badge-blue">{{ trainingQueue.length }}</span>
+      </div>
+      <p class="section-description">These flagged moments have been marked for script training. Use them to update your agent's call script and prevent similar failures.</p>
+      <div class="training-queue-list">
+        <div
+          v-for="seg in trainingQueue"
+          :key="`${seg.call_id}-${seg.turn}`"
+          class="training-queue-item"
+        >
+          <div class="training-item-source">
+            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="10" height="10" rx="2"/>
+              <path d="M5 5h4M5 8h2"/>
+            </svg>
+            <RouterLink :to="`/agents/${agentId}/calls/${seg.call_id}`" class="training-call-link">
+              {{ seg.call_id }}
+            </RouterLink>
+            <span class="training-item-date">{{ formatDate(seg.uploaded_at) }}</span>
+            <span class="training-turn-badge">Turn {{ seg.turn }}</span>
+          </div>
+          <div class="training-item-body">
+            <blockquote class="training-quote">"{{ seg.text }}"</blockquote>
+            <p class="training-reason">{{ seg.reason }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Aggregated Recommendations -->
     <section v-if="summary && summary.top_recommendations?.length" class="section">
       <div class="section-header">
@@ -208,9 +282,10 @@
 import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter, RouterLink } from 'vue-router';
 import { useAgentsStore } from '../store/agents.js';
-import { analyzeTranscript } from '../api/index.js';
+import { analyzeTranscript, getAgentSegmentActions } from '../api/index.js';
 import ScoreBadge from '../components/ScoreBadge.vue';
 import RecommendationCard from '../components/RecommendationCard.vue';
+import FlaggedSegment from '../components/FlaggedSegment.vue';
 import UploadTranscriptModal from '../components/UploadTranscriptModal.vue';
 import KpiEditor from '../components/KpiEditor.vue';
 
@@ -227,6 +302,32 @@ const loading = ref(true);
 const showUploadModal = ref(false);
 const analyzingIds = ref(new Set());
 const isEditingKpis = ref(false);
+const agentActions = ref([]);
+
+// Segments marked for script training across all calls
+const trainingQueue = computed(() => {
+  const trainingTurns = new Set(
+    agentActions.value.filter(a => a.action === 'training').map(a => `${a.call_id}:${a.turn}`)
+  );
+  return transcripts.value
+    .filter(t => t.analysis?.flagged_segments?.length)
+    .flatMap(t =>
+      t.analysis.flagged_segments
+        .filter(seg => trainingTurns.has(`${t.call_id}:${seg.turn}`))
+        .map(seg => ({ ...seg, call_id: t.call_id, uploaded_at: t.uploaded_at }))
+    );
+});
+
+// All high-severity flagged segments across every analyzed call for this agent
+const highSeveritySegments = computed(() =>
+  transcripts.value
+    .filter(t => t.analysis?.flagged_segments?.length)
+    .flatMap(t =>
+      t.analysis.flagged_segments
+        .filter(seg => seg.severity === 'high')
+        .map(seg => ({ ...seg, call_id: t.call_id, uploaded_at: t.uploaded_at }))
+    )
+);
 
 const avatarColors = ['#3b82f6', '#8b5cf6', '#06b6d4', '#10b981', '#f59e0b', '#ef4444'];
 const avatarColor = computed(() => {
@@ -245,6 +346,11 @@ onMounted(async () => {
     store.fetchAgentSummary(agentId.value),
     store.fetchAgentTranscripts(agentId.value),
   ]);
+  // Fetch segment actions after transcripts so trainingQueue computed is accurate
+  try {
+    const { data } = await getAgentSegmentActions(agentId.value);
+    agentActions.value = data.data.actions ?? [];
+  } catch { /* non-critical — queue just stays empty */ }
   loading.value = false;
 });
 
@@ -606,4 +712,136 @@ function formatDate(iso) {
 
 /* ─── Recs ────────────────────────────────────────── */
 .recs-list { display: flex; flex-direction: column; gap: 10px; }
+
+/* ─── High severity issues ───────────────────────── */
+.severity-icon-red { color: var(--score-red) !important; }
+
+.count-badge-red {
+  background: #fee2e2;
+  color: var(--score-red);
+}
+
+.section-description {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+
+.flagged-issues-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.flagged-issue-item {
+  background: var(--card-bg);
+  border: 1.5px solid var(--flag-high-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.issue-source {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px;
+  background: #fff5f5;
+  border-bottom: 1px solid var(--flag-high-border);
+  font-size: 12px;
+}
+.issue-source svg { width: 12px; height: 12px; color: var(--text-muted); flex-shrink: 0; }
+
+.issue-call-link {
+  font-family: monospace;
+  font-size: 11.5px;
+  color: var(--primary);
+  font-weight: 600;
+  transition: color var(--transition);
+}
+.issue-call-link:hover { color: var(--primary-light); }
+
+.issue-date {
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
+.flagged-issue-item :deep(.flagged-card) {
+  border: none;
+  border-radius: 0;
+}
+
+/* ─── Script Training Queue ──────────────────────── */
+.training-icon-blue { color: #0277bd !important; }
+
+.count-badge-blue {
+  background: #e3f2fd;
+  color: #0277bd;
+}
+
+.training-queue-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.training-queue-item {
+  background: var(--card-bg);
+  border: 1.5px solid #bae6fd;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.training-item-source {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px;
+  background: #f0f9ff;
+  border-bottom: 1px solid #bae6fd;
+  font-size: 12px;
+}
+.training-item-source svg { width: 12px; height: 12px; color: var(--text-muted); flex-shrink: 0; }
+
+.training-call-link {
+  font-family: monospace;
+  font-size: 11.5px;
+  color: #0277bd;
+  font-weight: 600;
+  transition: color var(--transition);
+}
+.training-call-link:hover { color: #01579b; }
+
+.training-item-date { color: var(--text-muted); }
+
+.training-turn-badge {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 600;
+  color: #0277bd;
+  background: #e3f2fd;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+.training-item-body {
+  padding: 12px 14px;
+}
+
+.training-quote {
+  font-size: 13px;
+  font-style: italic;
+  color: var(--text);
+  border-left: 2px solid #0277bd;
+  padding-left: 10px;
+  margin-bottom: 7px;
+  line-height: 1.55;
+  opacity: 0.85;
+}
+
+.training-reason {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
 </style>

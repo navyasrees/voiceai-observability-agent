@@ -56,6 +56,28 @@ export function getTranscriptsByAgent(agentId) {
   return transcripts.filter((t) => t.agent_id === agentId);
 }
 
+// ─── Segment action store ─────────────────────────────────────────────────────
+
+const segmentActions = {};
+
+export function saveSegmentAction(callId, turn, action) {
+  const key = `${callId}:${turn}:${action}`;
+  const result = { call_id: callId, turn, action, status: 'flagged', timestamp: new Date().toISOString() };
+  segmentActions[key] = result;
+  return result;
+}
+
+export function getSegmentActions(callId) {
+  return Object.entries(segmentActions)
+    .filter(([key]) => key.startsWith(`${callId}:`))
+    .map(([, val]) => val);
+}
+
+export function getAgentSegmentActions(agentId) {
+  const agentTranscripts = getTranscriptsByAgent(agentId);
+  return agentTranscripts.flatMap(t => getSegmentActions(t.call_id));
+}
+
 // ─── OAuth token store ────────────────────────────────────────────────────────
 
 const oauthTokens = {};

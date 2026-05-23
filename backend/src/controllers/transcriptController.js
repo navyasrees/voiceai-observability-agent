@@ -72,7 +72,55 @@ export async function analyzeTranscript(req, res) {
     return error(res, `LLM analysis failed: ${analysisResult.error}`, 502);
   }
 
+  // Override LLM's holistic score with a deterministic KPI-based score so the
+  // number always matches the pass/fail pills the user sees on screen.
+  if (Array.isArray(analysisResult.kpi_results) && analysisResult.kpi_results.length > 0) {
+    const passed = analysisResult.kpi_results.filter(r => r.passed).length;
+    analysisResult.overall_score = Math.round((passed / analysisResult.kpi_results.length) * 100);
+  }
+
   store.saveAnalysis(call_id, analysisResult);
 
   return success(res, { call_id, agent_id: agent.agent_id, analysis: analysisResult });
+}
+
+/**
+ * GET /api/transcripts/:call_id/segment-actions
+ * Returns all flagged segment actions for a specific call.
+ */
+export function getSegmentActionsForCall(req, res) {
+  const { call_id } = req.params;
+  const transcript = store.getTranscriptById(call_id);
+  if (!transcript) {
+    return error(res, `Transcript with call_id '${call_id}' not found`, 404);
+  }
+  const actions = store.getSegmentActions(call_id);
+  return success(res, { call_id, actions });
+}
+
+/**
+ * POST /api/transcripts/:call_id/segments/:turn/action
+ * Body: { action: "review" | "training" }
+ * Flags a specific transcript turn for human review or script training.
+ */
+export function flagSegment(req, res) {
+  const { call_id, turn } = req.params;
+  const { action } = req.body;
+
+  if (!['review', 'training'].includes(action)) {
+    return error(res, 'Invalid action. Must be review or training', 400);
+  }
+
+  const transcript = store.getTranscriptById(call_id);
+  if (!transcript) {
+    return error(res, `Transcript with call_id '${call_id}' not found`, 404);
+  }
+
+  const turnNum = parseInt(turn, 10);
+  if (isNaN(turnNum)) {
+    return error(res, 'Turn must be a valid integer', 400);
+  }
+
+  const result = store.saveSegmentAction(call_id, turnNum, action);
+  return success(res, result);
 }

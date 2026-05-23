@@ -137,6 +137,8 @@
                 v-for="(seg, i) in analysis.flagged_segments"
                 :key="i"
                 :segment="seg"
+                :call-id="callId"
+                :initial-actions="segmentActions"
               />
             </div>
           </div>
@@ -183,7 +185,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useRoute, RouterLink } from 'vue-router';
-import { getTranscript } from '../api/index.js';
+import { getTranscript, getCallSegmentActions } from '../api/index.js';
 import { useAgentsStore } from '../store/agents.js';
 import ScoreBadge from '../components/ScoreBadge.vue';
 import TranscriptViewer from '../components/TranscriptViewer.vue';
@@ -198,6 +200,7 @@ const agentId = computed(() => route.params.id);
 const callId = computed(() => route.params.call_id);
 
 const transcript = ref(null);
+const segmentActions = ref([]);
 const loading = ref(true);
 
 const analysis = computed(() => transcript.value?.analysis ?? null);
@@ -208,8 +211,16 @@ const failCount = computed(() => analysis.value?.kpi_results?.filter(r => !r.pas
 
 onMounted(async () => {
   await store.fetchAgents();
-  const { data } = await getTranscript(callId.value);
-  transcript.value = data.data.transcript;
+  const [transcriptRes, actionsRes] = await Promise.allSettled([
+    getTranscript(callId.value),
+    getCallSegmentActions(callId.value),
+  ]);
+  if (transcriptRes.status === 'fulfilled') {
+    transcript.value = transcriptRes.value.data.data.transcript;
+  }
+  if (actionsRes.status === 'fulfilled') {
+    segmentActions.value = actionsRes.value.data.data.actions ?? [];
+  }
   loading.value = false;
 });
 

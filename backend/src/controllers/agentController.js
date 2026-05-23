@@ -58,6 +58,19 @@ export function getAgentTranscripts(req, res) {
 }
 
 /**
+ * GET /api/agents/:id/segment-actions
+ * Returns all flagged segment actions across every call for this agent.
+ */
+export function getAgentSegmentActions(req, res) {
+  const { id } = req.params;
+  if (!store.getAgentById(id)) {
+    return error(res, `Agent with id '${id}' not found`, 404);
+  }
+  const actions = store.getAgentSegmentActions(id);
+  return success(res, { agent_id: id, actions });
+}
+
+/**
  * GET /api/agents/:id/summary
  * Aggregates analysis results across all analyzed transcripts for an agent.
  */
